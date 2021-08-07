@@ -1,0 +1,38 @@
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb
+D:\Work\CWork\banknote\TestWork\simple-serial-master\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+D:\Work\CWork\banknote\New folder\BankNote\BankNote\bin\Debug\ComPC2MC.dll
+D:\Work\CWork\banknote\New folder\BankNote\BankNote\bin\Debug\ComPC2MC.pdb
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+C:\Users\OHBAN 0\Documents\ComminicationTest\Ovan_P1(2020-05-04)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+C:\Users\大盤ぶるまい\Documents\STV01(2020-09-27)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\bin\Debug\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csprojAssemblyReference.cache
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-22_0)\ComPC2MC\ComPC2MC\obj\Debug\ComPC2MC.pdb

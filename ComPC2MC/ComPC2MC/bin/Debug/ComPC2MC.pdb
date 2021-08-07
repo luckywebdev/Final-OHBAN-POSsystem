@@ -1,0 +1,1152 @@
+'use strict';
+
+function _chalk() {
+  const data = _interopRequireDefault(require('chalk'));
+
+  _chalk = function () {
+    return data;
+  };
+
+  return data;
+}
+
+function _emittery() {
+  const data = _interopRequireDefault(require('emittery'));
+
+  _emittery = function () {
+    return data;
+  };
+
+  return data;
+}
+
+function _exit() {
+  const data = _interopRequireDefault(require('exit'));
+
+  _exit = function () {
+    return data;
+  };
+
+  return data;
+}
+
+function _throat() {
+  const data = _interopRequireDefault(require('throat'));
+
+  _throat = function () {
+    return data;
+  };
+
+  return data;
+}
+
+function _jestUtil() {
+  const data = require('jest-util');
+
+  _jestUtil = function () {
+    return data;
+  };
+
+  return data;
+}
+
+function _jestWorker() {
+  const data = _interopRequireDefault(require('jest-worker'));
+
+  _jestWorker = function () {
+    return data;
+  };
+
+  return data;
+}
+
+var _runTest = _interopRequireDefault(require('./runTest'));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {default: obj};
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
+
+const TEST_WORKER_PATH = require.resolve('./testWorker');
+
+class TestRunner {
+  constructor(globalConfig, context) {
+    _defineProperty(this, '_globalConfig', void 0);
+
+    _defineProperty(this, '_context', void 0);
+
+    _defineProperty(this, 'eventEmitter', new (_emittery().default.Typed)());
+
+    _defineProperty(
+      this,
+      '__PRIVATE_UNSTABLE_API_supportsEventEmitters__',
+      true
+    );
+
+    _defineProperty(this, 'isSerial', void 0);
+
+    _defineProperty(this, 'on', this.eventEmitter.on.bind(this.eventEmitter));
+
+    this._globalConfig = globalConfig;
+    this._context = context || {};
+  }
+
+  async runTests(tests, watcher, onStart, onResult, onFailure, options) {
+    return await (options.serial
+      ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
+      : this._createParallelTestRun(
+          tests,
+          watcher,
+          onStart,
+          onResult,
+          onFailure
+        ));
+  }
+
+  async _createInBandTestRun(tests, watcher, onStart, onResult, onFailure) {
+    process.env.JEST_WORKER_ID = '1';
+    const mutex = (0, _throat().default)(1);
+    return tests.reduce(
+      (promise, test) =>
+        mutex(() =>
+          promise
+            .then(async () => {
+              if (watcher.isInterrupted()) {
+                throw new CancelRun();
+              }
+
+              let sendMessageToJest; // Remove `if(onStart)` in Jest 27
+
+              if (onStart) {
+                await onStart(test);
+                return (0, _runTest.default)(
+                  test.path,
+                  this._globalConfig,
+                  test.context.config,
+                  test.context.resolver,
+                  this._context,
+                  undefined
+                );
+              } else {
+                // `deepCyclicCopy` used here to avoid mem-leak
+                sendMessageToJest = (eventName, args) =>
+                  this.eventEmitter.emit(
+                    eventName,
+                    (0, _jestUtil().deepCyclicCopy)(args, {
+                      keepPrototype: false
+                    })
+                  );
+
+                await this.eventEmitter.emit('test-file-start', [test]);
+                return (0, _runTest.default)(
+                  test.path,
+                  this._globalConfig,
+                  test.context.config,
+                  test.context.resolver,
+                  this._context,
+                  sendMessageToJest
+                );
+              }
+            })
+            .then(result => {
+              if (onResult) {
+                return onResult(test, result);
+              } else {
+                return this.eventEmitter.emit('test-file-success', [
+                  test,
+                  result
+                ]);
+              }
+            })
+            .catch(err => {
+              if (onFailure) {
+                return onFailure(test, err);
+              } else {
+                return this.eventEmitter.emit('test-file-failure', [test, err]);
+              }
+            })
+        ),
+      Promise.resolve()
+    );
+  }
+
+  async _createParallelTestRun(tests, watcher, onStart, onResult, onFailure) {
+    const resolvers = new Map();
+
+    for (const test of tests) {
+      if (!resolvers.has(test.context.config.name)) {
+        resolvers.set(test.context.config.name, {
+          config: test.context.config,
+          serializableModuleMap: test.context.moduleMap.toJSON()
+        });
+      }
+    }
+
+    const worker = new (_jestWorker().default)(TEST_WORKER_PATH, {
+      exposedMethods: ['worker'],
+      forkOptions: {
+        stdio: 'pipe'
+      },
+      maxRetries: 3,
+      numWorkers: this._globalConfig.maxWorkers,
+      setupArgs: [
+        {
+          serializableResolvers: Array.from(resolvers.values())
+        }
+      ]
+    });
+    if (worker.getStdout()) worker.getStdout().pipe(process.stdout);
+    if (worker.getStderr()) worker.getStderr().pipe(process.stderr);
+    const mutex = (0, _throat().default)(this._globalConfig.maxWorkers); // Send test suites to workers continuously instead of all at once to track
+    // the start time of individual tests.
+
+    const runTestInWorker = test =>
+      mutex(async () => {
+        if (watcher.isInterrupted()) {
+          return Promise.reject();
+        } // Remove `if(onStart)` in Jest 27
+
+        if (onStart) {
+          await onStart(test);
+        } else {
+          await this.eventEmitter.emit('test-file-start', [test]);
+        }
+
+        const promise = worker.worker({
+          config: test.context.config,
+          context: {
+            ...this._context,
+            changedFiles:
+              this._context.changedFiles &&
+              Array.from(this._context.changedFiles),
+            sourcesRelatedToTestsInChangedFiles:
+              this._context.sourcesRelatedToTestsInChangedFiles &&
+              Array.from(this._context.sourcesRelatedToTestsInChangedFiles)
+          },
+          globalConfig: this._globalConfig,
+          path: test.path
+        });
+
+        if (promise.UNSTABLE_onCustomMessage) {
+          // TODO: Get appropriate type for `onCustomMessage`
+          promise.UNSTABLE_onCustomMessage(([event, payload]) => {
+            this.eventEmitter.emit(event, payload);
+          });
+        }
+
+        return promise;
+      });
+
+    const onError = async (err, test) => {
+      // Remove `if(onFailure)` in Jest 27
+      if (onFailure) {
+        await onFailure(test, err);
+      } else {
+        await this.eventEmitter.emit('test-file-failure', [test, err]);
+      }
+
+      if (err.type === 'ProcessTerminatedError') {
+        console.error(
+          'A worker process has quit unexpectedly! ' +
+            'Most likely this is an initialization error.'
+        );
+        (0, _exit().default)(1);
+      }
+    };
+
+    const onInterrupt = new Promise((_, reject) => {
+      watcher.on('change', state => {
+        if (state.interrupted) {
+          reject(new CancelRun());
+        }
+      });
+    });
+    const runAllTests = Promise.all(
+      tests.map(test =>
+        runTestInWorker(test)
+          .then(result => {
+            if (onResult) {
+              return onResult(test, result);
+            } else {
+              return this.eventEmitter.emit('test-file-success', [
+                test,
+                result
+              ]);
+            }
+          })
+          .catch(error => onError(error, test))
+      )
+    );
+
+    const cleanup = async () => {
+      const {forceExited} = await worker.end();
+
+      if (forceExited) {
+        console.error(
+          _chalk().default.yellow(
+            'A worker process has failed to exit gracefully and has been force exited. ' +
+              'This is likely caused by tests leaking due to improper teardown. ' +
+              'Try running with --detectOpenHandles to find leaks.'
+          )
+        );
+      }
+    };
+
+    return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
+  }
+}
+
+class CancelRun extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'CancelRun';
+  }
+}
+
+module.exports = TestRunner;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      #!/usr/bin/env node
+
+"use strict";
+
+const fs = require("fs");
+const path = require("path");
+const validators = require("./validators");
+
+// Require locally installed eslint, for `npx eslint-config-prettier` support
+// with no local eslint-config-prettier installation.
+const { ESLint } = require(require.resolve("eslint", {
+  paths: [process.cwd(), ...require.resolve.paths("eslint")],
+}));
+
+const SPECIAL_RULES_URL =
+  "https://github.com/prettier/eslint-config-prettier#special-rules";
+
+if (module === require.main) {
+  const args = process.argv.slice(2);
+
+  if (args.length === 0) {
+    console.error(help());
+    process.exit(1);
+  }
+
+  const eslint = new ESLint();
+
+  Promise.all(args.map((file) => eslint.calculateConfigForFile(file)))
+    .then((configs) => {
+      const rules = [].concat(
+        ...configs.map((config, index) =>
+          Object.entries(config.rules).map((entry) => [...entry, args[index]])
+        )
+      );
+      const result = processRules(rules);
+      if (result.stderr) {
+        console.error(result.stderr);
+      }
+      if (result.stdout) {
+        console.error(result.stdout);
+      }
+      process.exit(result.code);
+    })
+    .catch((error) => {
+      console.error(error.message);
+      process.exit(1);
+    });
+}
+
+function help() {
+  return `
+Usage: npx eslint-config-prettier FILE...
+
+Resolves an ESLint configuration for every given FILE and checks if they
+contain rules that are unnecessary or conflict with Prettier. Example:
+
+  npx eslint-config-prettier index.js test/index.js other/file/to/check.js
+
+Exit codes:
+
+0: No automatically detectable problems found.
+1: General error.
+2: Conflicting rules found.
+
+For more information, see:
+https://github.com/prettier/eslint-config-prettier#cli-helper-tool
+  `.trim();
+}
+
+function processRules(configRules) {
+  // This used to look at "files" in package.json, but that is not reliable due
+  // to an npm bug. See:
+  // https://github.com/prettier/eslint-config-prettier/issues/57
+  const allRules = Object.assign(
+    Object.create(null),
+    ...fs
+      .readdirSync(path.join(__dirname, ".."))
+      .filter((name) => !name.startsWith(".") && name.endsWith(".js"))
+      .map((ruleFileName) => require(`../${ruleFileName}`).rules)
+  );
+
+  const regularRules = filterRules(allRules, (_, value) => value === "off");
+  const optionsRules = filterRules(
+    allRules,
+    (ruleName, value) => value === 0 && ruleName in validators
+  );
+  const specialRules = filterRules(
+    allRules,
+    (ruleName, value) => value === 0 && !(ruleName in validators)
+  );
+
+  const enabledRules = configRules
+    .map(([ruleName, value, source]) => {
+      const arrayValue = Array.isArray(value) ? value : [value];
+      const [level, ...options] = arrayValue;
+      const isOff = level === "off" || level === 0;
+      return isOff ? null : { ruleName, options, source };
+    })
+    .filter(Boolean);
+
+  const flaggedRules = enabledRules.filter(
+    ({ ruleName }) => ruleName in allRules
+  );
+
+  const regularFlaggedRuleNames = filterRuleNames(
+    flaggedRules,
+    ({ ruleName }) => ruleName in regularRules
+  );
+  const optionsFlaggedRuleNames = filterRuleNames(
+    flaggedRules,
+    ({ ruleName, ...rule }) =>
+      ruleName in optionsRules && !validators[ruleName](rule, enabledRules)
+  );
+  const specialFlaggedRuleNames = filterRuleNames(
+    flaggedRules,
+    ({ ruleName }) => ruleName in specialRules
+  );
+
+  if (
+    regularFlaggedRuleNames.length === 0 &&
+    optionsFlaggedRuleNames.length === 0
+  ) {
+    const baseMessage =
+      "No rules that are unnecessary or conflict with Prettier were found.";
+
+    const message =
+      specialFlaggedRuleNames.length === 0
+        ? baseMessage
+        : [
+            baseMessage,
+            "",
+            "However, the following rules are enabled but cannot be automatically checked. See:",
+            SPECIAL_RULES_URL,
+            "",
+            printRuleNames(specialFlaggedRuleNames),
+          ].join("\n");
+
+    return {
+      stdout: message,
+      code: 0,
+    };
+  }
+
+  const regularMessage = [
+    "The following rules are unnecessary or might conflict with Prettier:",
+    "",
+    printRuleNames(regularFlaggedRuleNames),
+  ].join("\n");
+
+  const optionsMessage = [
+    "The following rules are enabled with config that might conflict with Prettier. See:",
+    SPECIAL_RULES_URL,
+    "",
+    printRuleNames(optionsFlaggedRuleNames),
+  ].join("\n");
+
+  const specialMessage = [
+    "The following rules are enabled but cannot be automatically checked. See:",
+    SPECIAL_RULES_URL,
+    "",
+    printRuleNames(specialFlaggedRuleNames),
+  ].join("\n");
+
+  const message = [
+    regularFlaggedRuleNames.length === 0 ? null : regularMessage,
+    optionsFlaggedRuleNames.length === 0 ? null : optionsMessage,
+    specialFlaggedRuleNames.length === 0 ? null : specialMessage,
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
+  return {
+    stdout: message,
+    code: 2,
+  };
+}
+
+function filterRules(rules, fn) {
+  return Object.entries(rules)
+    .filter(([ruleName, value]) => fn(ruleName, value))
+    .reduce((obj, [ruleName]) => {
+      obj[ruleName] = true;
+      return obj;
+    }, Object.create(null));
+}
+
+function filterRuleNames(rules, fn) {
+  return [
+    ...new Set(rules.filter((rule) => fn(rule)).map((rule) => rule.ruleName)),
+  ];
+}
+
+function printRuleNames(ruleNames) {
+  return ruleNames
+    .slice()
+    .sort()
+    .map((ruleName) => `- ${ruleName}`)
+    .join("\n");
+}
+
+exports.processRules = processRules;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                # vue-jest
+
+Jest Vue transformer with source map support
+
+> **NOTE:** This is documentation for `vue-jest@3.x`. [View the vue-jest@2.x documentation](https://github.com/vuejs/vue-jest/tree/e694fc7ce11ae1ac1c778ed7c4402515c5f0d5aa)
+
+## Usage
+
+```bash
+npm install --save-dev vue-jest
+```
+
+## Setup
+
+To define `vue-jest` as a transformer for your `.vue` files, map them to the `vue-jest` module:
+
+```json
+{
+  "jest": {
+    "transform": {
+      "^.+\\.vue$": "vue-jest"
+    }
+}
+```
+
+A full config will look like this.
+
+```json
+{
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.vue$": "vue-jest"
+    }
+  }
+}
+```
+
+If you're on a version of Jest older than 22.4.0, you need to set `mapCoverage` to `true` in order to use source maps.
+
+## Example Projects
+
+Example repositories testing Vue components with jest and vue-jest:
+
+- [Avoriaz with Jest](https://github.com/eddyerburgh/avoriaz-jest-example)
+- [Vue Test Utils with Jest](https://github.com/eddyerburgh/vue-test-utils-jest-example)
+
+## Supported langs
+
+vue-jest compiles the script and template of SFCs into a JavaScript file that Jest can run. **Currently, SCSS, SASS and Stylus are the only style languages that are compiled**.
+
+### Supported script languages
+
+- **typescript** (`lang="ts"`, `lang="typescript"`)
+- **coffeescript** (`lang="coffee"`, `lang="coffeescript"`)
+
+### Global Jest options
+
+You can change the behavior of `vue-jest` by using `jest.globals`.
+
+> *Tip:* Need programmatic configuration? Use the [--config](https://jestjs.io/docs/en/cli.html#config-path) option in Jest CLI, and export a `.js` file
+
+#### babelConfig
+
+Provide `babelConfig` in one of the following formats:
+
+- `<Boolean>`
+- `<Object>`
+- `<String>`
+
+##### Boolean
+
+- `true` - Enable Babel processing. `vue-jest` will try to find Babel configuration using [find-babel-config](https://www.npmjs.com/package/find-babel-config).
+
+> This is the default behavior if [babelConfig](#babelconfig) is not defined.
+
+- `false` - Skip Babel processing entirely:
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "babelConfig": false
+      }
+    }
+  }
+}
+```
+
+##### Object
+
+Provide inline [Babel options](https://babeljs.io/docs/en/options):
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "babelConfig": {
+          "presets": [
+            [
+              "env",
+              {
+                "useBuiltIns": "entry",
+                "shippedProposals": true
+              }
+            ]
+          ],
+          "plugins": [
+            "syntax-dynamic-import"
+          ],
+          "env": {
+            "test": {
+              "plugins": [
+                "dynamic-import-node"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+##### String
+
+If a string is provided, it will be an assumed path to a babel configuration file (e.g. `.babelrc`, `.babelrc.js`).
+- Config file should export a Babel configuration object.
+- Should *not* point to a [project-wide configuration file (babel.config.js)](https://babeljs.io/docs/en/config-files#project-wide-configuration), which exports a function.
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "babelConfig": "path/to/.babelrc.js"
+      }
+    }
+  }
+}
+```
+
+To use the [Config Function API](https://babeljs.io/docs/en/config-files#config-function-api), use inline options instead. i.e.:
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "babelConfig": {
+          "configFile": "path/to/babel.config.js"
+        }
+      }
+    }
+  }
+}
+```
+
+#### tsConfig
+
+Provide `tsConfig` in one of the following formats:
+
+- `<Boolean>`
+- `<Object>`
+- `<String>`
+
+##### Boolean
+
+- `true` - Process TypeScript files using custom configuration. `vue-jest` will try to find TypeScript configuration using [tsconfig.loadSync](https://www.npmjs.com/package/tsconfig#api).
+
+> This is the default behavior if [tsConfig](#tsConfig) is not defined.
+
+- `false` - Process TypeScript files using the [default configuration provided by vue-jest](https://github.com/vuejs/vue-jest/blob/master/lib/load-typescript-config.js#L5-L27).
+
+##### Object
+
+Provide inline [TypeScript compiler options](https://www.typescriptlang.org/docs/handbook/compiler-options.html):
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "tsConfig": {
+          "importHelpers": true
+        }
+      }
+    }
+  }
+}
+```
+
+##### String
+
+If a string is provided, it will be an assumed path to a TypeScript configuration file:
+
+```json
+{
+  "jest": {
+    "globals": {
+      "vue-jest": {
+        "tsConfig": "path/to/tsconfig.json"
+      }
+    }
+  }
+}
+```
+
+### Supported template languages
+
+- **pug** (`lang="pug"`)
+  - To give options for the Pug compiler, enter them into the Jest configuration.
+  The options will be passed to pug.compile().
+
+  ```json
+    {
+      "jest": {
+        "globals": {
+          "vue-jest": {
+            "pug": {
+              "basedir": "mybasedir"
+            }
+          }
+        }
+      }
+    }
+  ```
+
+- **jade** (`lang="jade"`)
+- **haml** (`lang="haml"`)
+
+### Supported style languages
+
+- **stylus** (`lang="stylus"`, `lang="styl"`)
+- **sass** (`lang="sass"`)
+  - The SASS compiler supports jest's [moduleNameMapper](https://facebook.github.io/jest/docs/en/configuration.html#modulenamemapper-object-string-string) which is the suggested way of dealing with Webpack aliases.
+- **scss** (`lang="scss"`)
+  - The SCSS compiler supports jest's [moduleNameMapper](https://facebook.github.io/jest/docs/en/configuration.html#modulenamemapper-object-string-string) which is the suggested way of dealing with Webpack aliases.
+  - To import globally included files (ie. variables, mixins, etc.), include them in the Jest configuration at `jest.globals['vue-jest'].resources.scss`:
+
+    ```json
+    {
+      "jest": {
+        "globals": {
+          "vue-jest": {
+            "resources": {
+              "scss": [
+                "./node_modules/package/_mixins.scss",
+                "./src/assets/css/globals.scss"
+              ]
+            }
+          }
+        }
+      }
+    }
+    ```
+- **postcss** (`lang="pcss"`, `lang="postcss"`)
+
+## CSS options
+
+`experimentalCSSCompile`: `Boolean` Default true. Turn off CSS compilation
+`hideStyleWarn`: `Boolean` Default false. Hide warnings about CSS compilation
+`resources`:
+
+  ```json
+  {
+    "jest": {
+      "globals": {
+        "vue-jest": {
+          "hideStyleWarn": true,
+          "experimentalCSSCompile": true
+        }
+      }
+    }
+  }
+  ```
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     'use strict'
+
+const assert = require('assert')
+const Buffer = require('buffer').Buffer
+const realZlib = require('zlib')
+
+const constants = exports.constants = require('./constants.js')
+const Minipass = require('minipass')
+
+const OriginalBufferConcat = Buffer.concat
+
+const _superWrite = Symbol('_superWrite')
+class ZlibError extends Error {
+  constructor (err) {
+    super('zlib: ' + err.message)
+    this.code = err.code
+    this.errno = err.errno
+    /* istanbul ignore if */
+    if (!this.code)
+      this.code = 'ZLIB_ERROR'
+
+    this.message = 'zlib: ' + err.message
+    Error.captureStackTrace(this, this.constructor)
+  }
+
+  get name () {
+    return 'ZlibError'
+  }
+}
+
+// the Zlib class they all inherit from
+// This thing manages the queue of requests, and returns
+// true or false if there is anything in the queue when
+// you call the .write() method.
+const _opts = Symbol('opts')
+const _flushFlag = Symbol('flushFlag')
+const _finishFlushFlag = Symbol('finishFlushFlag')
+const _fullFlushFlag = Symbol('fullFlushFlag')
+const _handle = Symbol('handle')
+const _onError = Symbol('onError')
+const _sawError = Symbol('sawError')
+const _level = Symbol('level')
+const _strategy = Symbol('strategy')
+const _ended = Symbol('ended')
+const _defaultFullFlush = Symbol('_defaultFullFlush')
+
+class ZlibBase extends Minipass {
+  constructor (opts, mode) {
+    if (!opts || typeof opts !== 'object')
+      throw new TypeError('invalid options for ZlibBase constructor')
+
+    super(opts)
+    this[_sawError] = false
+    this[_ended] = false
+    this[_opts] = opts
+
+    this[_flushFlag] = opts.flush
+    this[_finishFlushFlag] = opts.finishFlush
+    // this will throw if any options are invalid for the class selected
+    try {
+      this[_handle] = new realZlib[mode](opts)
+    } catch (er) {
+      // make sure that all errors get decorated properly
+      throw new ZlibError(er)
+    }
+
+    this[_onError] = (err) => {
+      // no sense raising multiple errors, since we abort on the first one.
+      if (this[_sawError])
+        return
+
+      this[_sawError] = true
+
+      // there is no way to cleanly recover.
+      // continuing only obscures problems.
+      this.close()
+      this.emit('error', err)
+    }
+
+    this[_handle].on('error', er => this[_onError](new ZlibError(er)))
+    this.once('end', () => this.close)
+  }
+
+  close () {
+    if (this[_handle]) {
+      this[_handle].close()
+      this[_handle] = null
+      this.emit('close')
+    }
+  }
+
+  reset () {
+    if (!this[_sawError]) {
+      assert(this[_handle], 'zlib binding closed')
+      return this[_handle].reset()
+    }
+  }
+
+  flush (flushFlag) {
+    if (this.ended)
+      return
+
+    if (typeof flushFlag !== 'number')
+      flushFlag = this[_fullFlushFlag]
+    this.write(Object.assign(Buffer.alloc(0), { [_flushFlag]: flushFlag }))
+  }
+
+  end (chunk, encoding, cb) {
+    if (chunk)
+      this.write(chunk, encoding)
+    this.flush(this[_finishFlushFlag])
+    this[_ended] = true
+    return super.end(null, null, cb)
+  }
+
+  get ended () {
+    return this[_ended]
+  }
+
+  write (chunk, encoding, cb) {
+    // process the chunk using the sync process
+    // then super.write() all the outputted chunks
+    if (typeof encoding === 'function')
+      cb = encoding, encoding = 'utf8'
+
+    if (typeof chunk === 'string')
+      chunk = Buffer.from(chunk, encoding)
+
+    if (this[_sawError])
+      return
+    assert(this[_handle], 'zlib binding closed')
+
+    // _processChunk tries to .close() the native handle after it's done, so we
+    // intercept that by temporarily making it a no-op.
+    const nativeHandle = this[_handle]._handle
+    const originalNativeClose = nativeHandle.close
+    nativeHandle.close = () => {}
+    const originalClose = this[_handle].close
+    this[_handle].close = () => {}
+    // It also calls `Buffer.concat()` at the end, which may be convenient
+    // for some, but which we are not interested in as it slows us down.
+    Buffer.concat = (args) => args
+    let result
+    try {
+      const flushFlag = typeof chunk[_flushFlag] === 'number'
+        ? chunk[_flushFlag] : this[_flushFlag]
+      result = this[_handle]._processChunk(chunk, flushFlag)
+      // if we don't throw, reset it back how it was
+      Buffer.concat = OriginalBufferConcat
+    } catch (err) {
+      // or if we do, put Buffer.concat() back before we emit error
+      // Error events call into user code, which may call Buffer.concat()
+      Buffer.concat = OriginalBufferConcat
+      this[_onError](new ZlibError(err))
+    } finally {
+      if (this[_handle]) {
+        // Core zlib resets `_handle` to null after attempting to close the
+        // native handle. Our no-op handler prevented actual closure, but we
+        // need to restore the `._handle` property.
+        this[_handle]._handle = nativeHandle
+        nativeHandle.close = originalNativeClose
+        this[_handle].close = originalClose
+        // `_processChunk()` adds an 'error' listener. If we don't remove it
+        // after each call, these handlers start piling up.
+        this[_handle].removeAllListeners('error')
+        // make sure OUR error listener is still attached tho
+      }
+    }
+
+    if (this[_handle])
+      this[_handle].on('error', er => this[_onError](new ZlibError(er)))
+
+    let writeReturn
+    if (result) {
+      if (Array.isArray(result) && result.length > 0) {
+        // The first buffer is always `handle._outBuffer`, which would be
+        // re-used for later invocations; so, we always have to copy that one.
+        writeReturn = this[_superWrite](Buffer.from(result[0]))
+        for (let i = 1; i < result.length; i++) {
+          writeReturn = this[_superWrite](result[i])
+        }
+      } else {
+        writeReturn = this[_superWrite](Buffer.from(result))
+      }
+    }
+
+    if (cb)
+      cb()
+    return writeReturn
+  }
+
+  [_superWrite] (data) {
+    return super.write(data)
+  }
+}
+
+class Zlib extends ZlibBase {
+  constructor (opts, mode) {
+    opts = opts || {}
+
+    opts.flush = opts.flush || constants.Z_NO_FLUSH
+    opts.finishFlush = opts.finishFlush || constants.Z_FINISH
+    super(opts, mode)
+
+    this[_fullFlushFlag] = constants.Z_FULL_FLUSH
+    this[_level] = opts.level
+    this[_strategy] = opts.strategy
+  }
+
+  params (level, strategy) {
+    if (this[_sawError])
+      return
+
+    if (!this[_handle])
+      throw new Error('cannot switch params when binding is closed')
+
+    // no way to test this without also not supporting params at all
+    /* istanbul ignore if */
+    if (!this[_handle].params)
+      throw new Error('not supported in this implementation')
+
+    if (this[_level] !== level || this[_strategy] !== strategy) {
+      this.flush(constants.Z_SYNC_FLUSH)
+      assert(this[_handle], 'zlib binding closed')
+      // .params() calls .flush(), but the latter is always async in the
+      // core zlib. We override .flush() temporarily to intercept that and
+      // flush synchronously.
+      const origFlush = this[_handle].flush
+      this[_handle].flush = (flushFlag, cb) => {
+        this.flush(flushFlag)
+        cb()
+      }
+      try {
+        this[_handle].params(level, strategy)
+      } finally {
+        this[_handle].flush = origFlush
+      }
+      /* istanbul ignore else */
+      if (this[_handle]) {
+        this[_level] = level
+        this[_strategy] = strategy
+      }
+    }
+  }
+}
+
+// minimal 2-byte header
+class Deflate extends Zlib {
+  constructor (opts) {
+    super(opts, 'Deflate')
+  }
+}
+
+class Inflate extends Zlib {
+  constructor (opts) {
+    super(opts, 'Inflate')
+  }
+}
+
+// gzip - bigger header, same deflate compression
+const _portable = Symbol('_portable')
+class Gzip extends Zlib {
+  constructor (opts) {
+    super(opts, 'Gzip')
+    this[_portable] = opts && !!opts.portable
+  }
+
+  [_superWrite] (data) {
+    if (!this[_portable])
+      return super[_superWrite](data)
+
+    // we'll always get the header emitted in one first chunk
+    // overwrite the OS indicator byte with 0xFF
+    this[_portable] = false
+    data[9] = 255
+    return super[_superWrite](data)
+  }
+}
+
+class Gunzip extends Zlib {
+  constructor (opts) {
+    super(opts, 'Gunzip')
+  }
+}
+
+// raw - no header
+class DeflateRaw extends Zlib {
+  constructor (opts) {
+    super(opts, 'DeflateRaw')
+  }
+}
+
+class InflateRaw extends Zlib {
+  constructor (opts) {
+    super(opts, 'InflateRaw')
+  }
+}
+
+// auto-detect header.
+class Unzip extends Zlib {
+  constructor (opts) {
+    super(opts, 'Unzip')
+  }
+}
+
+class Brotli extends ZlibBase {
+  constructor (opts, mode) {
+    opts = opts || {}
+
+    opts.flush = opts.flush || constants.BROTLI_OPERATION_PROCESS
+    opts.finishFlush = opts.finishFlush || constants.BROTLI_OPERATION_FINISH
+
+    super(opts, mode)
+
+    this[_fullFlushFlag] = constants.BROTLI_OPERATION_FLUSH
+  }
+}
+
+class BrotliCompress extends Brotli {
+  constructor (opts) {
+    super(opts, 'BrotliCompress')
+  }
+}
+
+class BrotliDecompress extends Brotli {
+  constructor (opts) {
+    super(opts, 'BrotliDecompress')
+  }
+}
+
+exports.Deflate = Deflate
+exports.Inflate = Inflate
+exports.Gzip = Gzip
+exports.Gunzip = Gunzip
+exports.DeflateRaw = DeflateRaw
+exports.InflateRaw = InflateRaw
+exports.Unzip = Unzip
+/* istanbul ignore else */
+if (typeof realZlib.BrotliCompress === 'function') {
+  exports.BrotliCompress = BrotliCompress
+  exports.BrotliDecompress = BrotliDecompress
+} else {
+  exports.BrotliCompress = exports.BrotliDecompress = class {
+    constructor () {
+      throw new Error('Brotli is not supported in this version of Node.js')
+    }
+  }
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            

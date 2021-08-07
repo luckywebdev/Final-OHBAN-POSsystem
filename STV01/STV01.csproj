@@ -1,0 +1,487 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F36FB4BA-DB97-4AA2-8A3F-0F735FFBCC6C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>STV01</RootNamespace>
+    <AssemblyName>STV01</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <PublishUrl>D:\ovan\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>F8CD9D738503FB92E74C9BBC2DADD94D4CB25AD1</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Ovan_P1_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>false</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BanknoteTester, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BanknoteTester\BanknoteTester\bin\x64\Release\BanknoteTester.exe</HintPath>
+    </Reference>
+    <Reference Include="ComPC2MC, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ComPC2MC\ComPC2MC\bin\x64\Release\ComPC2MC.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=15.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.15.0.5\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="HwaUSB">
+      <HintPath>..\packages\HwaUSB.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.Tools.Components, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.112.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.112.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.112.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.112.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Printing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TimeSetting, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\TimeSetting\bin\x64\Release\TimeSetting.exe</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AddMenuSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddMenuSetting.Designer.cs">
+      <DependentUpon>AddMenuSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoRestartSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AutoRestartSetting.Designer.cs">
+      <DependentUpon>AutoRestartSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BackRestore.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BackRestore.Designer.cs">
+      <DependentUpon>BackRestore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BankNoteSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BankNoteSetting.Designer.cs">
+      <DependentUpon>BankNoteSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BorderLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CategoryList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CategoryList.Designer.cs">
+      <DependentUpon>CategoryList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ClosingProcess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClosingProcess.Designer.cs">
+      <DependentUpon>ClosingProcess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ComModule.cs" />
+    <Compile Include="Constant.cs" />
+    <Compile Include="CreateCombobox.cs" />
+    <Compile Include="CreateFlowLayoutPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CreateLabel.cs" />
+    <Compile Include="CreatePanel.cs" />
+    <Compile Include="CreateTextBox.cs" />
+    <Compile Include="CustomButton.cs" />
+    <Compile Include="DBClass.cs" />
+    <Compile Include="DetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DetailView.Designer.cs">
+      <DependentUpon>DetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DropDownMenu.cs" />
+    <Compile Include="ErrorLogDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ErrorLogDetail.Designer.cs">
+      <DependentUpon>ErrorLogDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FalsePurchaseCancellation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FalsePurchaseCancellation.Designer.cs">
+      <DependentUpon>FalsePurchaseCancellation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GradientPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="GroupList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupList.Designer.cs">
+      <DependentUpon>GroupList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LoadingItemSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LoadingItemSetting.Designer.cs">
+      <DependentUpon>LoadingItemSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogDetailView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogDetailView.Designer.cs">
+      <DependentUpon>LogDetailView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogManage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogManage.Designer.cs">
+      <DependentUpon>LogManage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MaintaneceMenu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuReading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MenuReading.Designer.cs">
+      <DependentUpon>MenuReading.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MessageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageDialog.Designer.cs">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NetConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NetConfig.Designer.cs">
+      <DependentUpon>NetConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NumberInput.cs" />
+    <Compile Include="OrderDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordInput.cs" />
+    <Compile Include="PasswordSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PasswordSetting.Designer.cs">
+      <DependentUpon>PasswordSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PreviewSalePage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewSalePage.Designer.cs">
+      <DependentUpon>PreviewSalePage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductInfoSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductInfoSetting.Designer.cs">
+      <DependentUpon>ProductInfoSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductItemManagement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductItemManagement.Designer.cs">
+      <DependentUpon>ProductItemManagement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoundedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="RoundedFormDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SaleScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoldoutSetting1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoldoutSetting1.Designer.cs">
+      <DependentUpon>SoldoutSetting1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MonthDropDown.cs" />
+    <Compile Include="DateDropDown.cs" />
+    <Compile Include="TimeoutSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeoutSetting.Designer.cs">
+      <DependentUpon>TimeoutSetting.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="BackRestore.resx">
+      <DependentUpon>BackRestore.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CategoryList.resx">
+      <DependentUpon>CategoryList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DetailView.resx">
+      <DependentUpon>DetailView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FalsePurchaseCancellation.resx">
+      <DependentUpon>FalsePurchaseCancellation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupList.resx">
+      <DependentUpon>GroupList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogManage.resx">
+      <DependentUpon>LogManage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainMenu.resx">
+      <DependentUpon>MainMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MaintaneceMenu.resx">
+      <DependentUpon>MaintaneceMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MenuReading.resx">
+      <DependentUpon>MenuReading.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MessageDialog.resx">
+      <DependentUpon>MessageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PasswordSetting.resx">
+      <DependentUpon>PasswordSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PreviewSalePage.resx">
+      <DependentUpon>PreviewSalePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductItemManagement.resx">
+      <DependentUpon>ProductItemManagement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="SaleScreen.resx">
+      <DependentUpon>SaleScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoldoutSetting1.resx">
+      <DependentUpon>SoldoutSetting1.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram2.cd" />
+    <None Include="Ovan_P1_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\x86\Debug\resources\dropdownarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
+    <Content Include="order.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.112.0\build\net46\System.Data.SQLite.Core.targets')" />
+</Project>

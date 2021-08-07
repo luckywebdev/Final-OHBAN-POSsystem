@@ -1,0 +1,13 @@
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\bin\Release\BanknoteTester.exe.config
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\bin\Release\BanknoteTester.exe
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\bin\Release\BanknoteTester.pdb
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\bin\Release\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\bin\Release\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.csprojAssemblyReference.cache
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.Test.resources
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.Properties.Resources.resources
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.csproj.GenerateResource.cache
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.csproj.CoreCompileInputs.cache
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.csproj.CopyComplete
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.exe
+C:\Users\OOBAN01\Documents\obhan_test\STV01(2020-11-08)\BanknoteTester\BanknoteTester\obj\Release\BanknoteTester.pdb

@@ -1,0 +1,9 @@
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.Properties.Resources.resources
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.TimeSetting.resources
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.csproj.GenerateResource.cache
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.csproj.CoreCompileInputs.cache
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\bin\Release\TimeSetting.exe.config
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\bin\Release\TimeSetting.exe
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\bin\Release\TimeSetting.pdb
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.exe
+C:\Users\大盤ぶるまい\Documents\stv01_dev\c--PosSystem(2021-01-06)\TimeSetting\obj\Release\TimeSetting.pdb

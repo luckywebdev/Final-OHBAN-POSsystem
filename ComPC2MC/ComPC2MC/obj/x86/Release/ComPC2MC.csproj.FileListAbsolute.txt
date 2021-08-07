@@ -1,0 +1,19 @@
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\BankNote\bin\x86\Debug\ComPC2MC.dll
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\BankNote\bin\x86\Debug\ComPC2MC.pdb
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.dll
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.pdb
+C:\Users\OHBAN 0\Documents\ComminicationTest\BankNote(0424)\BankNote\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.csprojAssemblyReference.cache
+D:\ovan\Ovan_P1\BankNote\bin\x86\Debug\ComPC2MC.dll
+D:\ovan\Ovan_P1\BankNote\bin\x86\Debug\ComPC2MC.pdb
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\bin\x86\Release\ComPC2MC.dll
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\bin\x86\Release\ComPC2MC.pdb
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.csproj.CoreCompileInputs.cache
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.dll
+D:\ovan\Ovan_P1\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\bin\x86\Release\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\bin\x86\Release\ComPC2MC.pdb
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.csprojAssemblyReference.cache
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.csproj.CoreCompileInputs.cache
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.dll
+C:\Users\OOBAN01\Documents\obhan_test\Ovan_P1(2020-05-27)\ComPC2MC\ComPC2MC\obj\x86\Release\ComPC2MC.pdb
